@@ -1,0 +1,13 @@
+first I read the json file
+
+import pandas as pd
+import os 
+os.getcwd()
+os.chdir('/Users/mohsenrahimi/Downloads')
+import json
+
+f = open('data.csv')
+data = json.load(f)
+f.close()
+
+data
