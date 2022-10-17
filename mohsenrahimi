@@ -1,4 +1,5 @@
-first I read the json file
+#Data import
+#first I read the json file
 
 import pandas as pd
 import os 
@@ -10,4 +11,79 @@ f = open('data.csv')
 data = json.load(f)
 f.close()
 
+#overview of our dataset
 data
+
+#We can our dataset is a nested lists of dictionaries. we tranform our data into a dataset.
+
+data2 = pd.json_normalize(data)
+data2
+
+#the two nested columns are 'requiredSkills' and 'optionalSkills'. first to have a better view of them,
+#I created new columns without having dictionaries. So we can use dataframe function.
+
+# for required skills column
+skills=[]
+for i in data2['requiredSkills']:
+    L = []
+    if i==[]:
+        skills.append(i)
+    else:
+        for j in range(len(i)):
+            L.append(i[j]['name'])
+        skills.append(L)
+            
+data2['reqskills'] = skills
+
+
+# for optional skill column
+skills=[]
+for i in data2['optionalSkills']:
+    L = []
+    if i==[]:
+        skills.append(i)
+    else:
+        for j in range(len(i)):
+            L.append(i[j]['name'])
+        skills.append(L)
+        
+data2['optskills'] = skills
+
+# now our data look like this
+data2
+
+# for required and optional skill we want to know which skill are more prefered by the companies
+
+l = []
+for i in data2['reqskills']:
+    for j in i:
+        l.append(j)
+
+K = [[i, l.count(i)] for i in set(l)]
+
+required = pd.DataFrame(K)
+required.sort_values(1)
+
+# we can see that in the requiredskill 'python' is the most required one followed by the 'Spanish' language.
+
+l = []
+for i in data2['optskills']:
+    for j in i:
+        l.append(j)
+
+print ([ [i, l.count(i)] for i in set(l)])
+K = [[i, l.count(i)] for i in set(l)]
+optional = pd.DataFrame(K)
+optional.sort_values(1)
+
+# And for the optional skills we have the 'English' language as the first and Javascript and type script as the second place with equal amount
+
+# for the bookingGrade
+data2['bookingGrade'].value_counts()
+
+#we can see that we have 7979 values without any bookingGrade 
+
+# And for the officecity
+
+data2['officeCity'].value_counts()
+# the most job offered is for the office in the city of 'Strade'
